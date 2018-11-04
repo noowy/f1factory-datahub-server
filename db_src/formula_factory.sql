@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Detail` (
   `units` VARCHAR(20) NOT NULL,
   `for_sale` TINYINT(1) NOT NULL,
   `lifespan` INT NOT NULL,
+  `price` INT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `ID_UNIQUE` (`ID` ASC))
 ENGINE = InnoDB
@@ -240,10 +241,39 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Stock` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`Waste`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Waste` (
+  `component_id` MEDIUMINT UNSIGNED NOT NULL,
+  `quantity` INT UNSIGNED NOT NULL DEFAULT 0,
+  `manufacture_date` DATETIME NOT NULL,
+  `expiration_date` DATETIME NOT NULL,
+  INDEX `fk_Waste_Detail1_idx` (`component_id` ASC),
+  PRIMARY KEY (`component_id`, `manufacture_date`),
+  CONSTRAINT `fk_Waste_Detail1`
+    FOREIGN KEY (`component_id`)
+    REFERENCES `mydb`.`Detail` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 USE `mydb`;
 
 DELIMITER $$
 USE `mydb`$$
+
+CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Detail_BEFORE_INSERT` BEFORE INSERT ON `Detail` FOR EACH ROW
+BEGIN
+    IF NEW.for_sale=true 
+    THEN 
+      IF NEW.price IS NULL 
+      THEN 
+        signal sqlstate '45000';
+      END IF;
+    END IF;
+END$$
+
 CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Factory_Orders_BEFORE_DELETE` BEFORE DELETE ON `Factory_Orders` FOR EACH ROW
 BEGIN
     DECLARE _lifespan INT;
