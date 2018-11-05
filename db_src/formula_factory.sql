@@ -258,6 +258,24 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Waste` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`Account`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Account` ( 
+  `login` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `is_online` TINYINT(1) NOT NULL,
+  `client_id` MEDIUMINT UNSIGNED NULL,
+  PRIMARY KEY (`login`),
+  UNIQUE INDEX `login_UNIQUE` (`login` ASC),
+  INDEX `fk_Account_Client1_idx` (`client_id` ASC),
+  CONSTRAINT `fk_Account_Client1`
+    FOREIGN KEY (`client_id`)
+    REFERENCES `mydb`.`Client` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
 USE `mydb`;
 
 DELIMITER $$
