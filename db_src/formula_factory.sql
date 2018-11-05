@@ -264,7 +264,6 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`Account` ( 
   `login` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
-  `is_online` TINYINT(1) NOT NULL,
   `client_id` MEDIUMINT UNSIGNED NULL,
   PRIMARY KEY (`login`),
   UNIQUE INDEX `login_UNIQUE` (`login` ASC),
