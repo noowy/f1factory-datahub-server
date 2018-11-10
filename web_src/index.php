@@ -1,15 +1,8 @@
 <?php 
 
-// the request form is 
-// "?username=*defined_username*
-//  &password=*defined_password*
-//  &query=*your query to db*"
-
 include __DIR__ . '/db_conf.php';
-
-// Use these constsants to restrain access to the script
-define('USER', '');
-define('PASSWORD', '');
+define('USER', 'f1drm');
+define('PASSWORD', '4563728deK');
 
 if (($_POST['username'] != USER) || ($_POST['password'] != PASSWORD))
 {
@@ -27,7 +20,15 @@ if (isset($_POST['query']))
 	if($result === true)
 	{
 		$response['success'] = true;
-		$response['content'] = 'Data was updated';
+		if ($_POST['extra'] == 'get_id')
+		{
+			$last_id = $db->query('SELECT LAST_INSERT_ID() AS new_id');
+			$response['content'] = mysql_response_to_array($last_id);
+		}
+		else
+		{
+			$response['content'] = 'Data was updated';
+		}
 		echo json_encode($response);
 		exit();
 	}

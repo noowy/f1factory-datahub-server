@@ -280,6 +280,15 @@ USE `mydb`;
 DELIMITER $$
 USE `mydb`$$
 
+CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`MarketOrder_BEFORE_INSERT` BEFORE INSERT ON `MarketOrder` FOR EACH ROW
+BEGIN
+    DECLARE _current_client TINYINT;
+    SELECT current_client INTO _current_client FROM Client WHERE Client.ID=NEW.client_id;
+    IF _current_client=0 
+    THEN signal sqlstate '45000'; 
+    END IF;
+END$$
+
 CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Detail_BEFORE_INSERT` BEFORE INSERT ON `Detail` FOR EACH ROW
 BEGIN
     IF NEW.for_sale=true 
